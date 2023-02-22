@@ -1,1 +1,1 @@
-# G3-Human-Speed-Detection-IT314
+# G3-Speed-Detection-IT314
