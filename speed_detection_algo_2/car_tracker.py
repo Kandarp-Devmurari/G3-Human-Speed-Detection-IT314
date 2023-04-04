@@ -5,19 +5,23 @@ from csv import writer
 import math
 import dlib
 
-
+# creating a dataset by using the haar cascade classifier
+# the xml files can be created using the positive and negative images of the object to be detected.
 dataset_1 = cv2.CascadeClassifier(r'dataset\cars.xml')
 dataset_2 = cv2.CascadeClassifier(r'dataset\myhaar.xml')
-video_c = cv2.VideoCapture(r'videos\cars.mp4')  # video
-# video_c = cv2.VideoCapture(r'V-core\carsVid.mp4')
+
+# video
+video_c = cv2.VideoCapture(r'videos\cars.mp4')  
 
 
+# --------- SPEED CALCULATION --------------- (FR)
 def vehicle_speed(side1, side2):
-    # pixels = math.sqrt(si1[0] + si2[1])
+    # calculating distance moved by the object from the difference 
+    # between the object pixels between 2 frames 
     pixels = math.sqrt(
         math.pow(side2[0] - side1[0], 2) + math.pow(side2[1] - side1[1], 2)
     )
-    # Netpbm color image format -> lowest common denominator color image file format.
+
     ppm = 16.8      # pixels per minute
     meters = pixels / ppm
     fps = 18
@@ -25,6 +29,8 @@ def vehicle_speed(side1, side2):
     return speed
 
 
+# multiple car tracker fullfilling the Multi-detection Functional requirement
+# -------- MULTI DETECTION ----------- (FR)
 def multiple_car_tracker():
     frame_counter = 0
     current_car = 1     # car count starts from 1
@@ -40,23 +46,31 @@ def multiple_car_tracker():
 
     while True:
         start_time = time.time()
+
+        # .read() returns a tuple, of which video stores the frame of the video
         rc, video = video_c.read()
 
         if type(video) == type(None):
             break
 
-        # video screen size adjusted and set to full screen
         # adds the video to the screen and adjusts the size
         video = cv2.resize(video, (height, width))
         video_final = video.copy()
-        frame_counter += 1      # incrementing frames repeatedly
+
+        # incrementing frames repeatedly
+        frame_counter += 1      
 
         delete_car = []
+
+        # ---------- QUALITY DETECTION ------------- 
         for car_track in car_tracker.keys():
             quality_tracker = car_tracker[car_track].update(video)
 
+            # if the quality of tracker(ie accuracy and reliability of the correlation tracker in detection) is less than 7
+            #, then the tracker is removed from the car_tracker list 
+            # This prevents false positives and false negatives.
+            # -------------- ACCURATE DETECTION ------------- (NFR)
             if quality_tracker < 7:
-                # the cars which get tracked succesfully will get added to the delete car array.
                 delete_car.append(car_track)
 
         for car_track in delete_car:
@@ -65,36 +79,47 @@ def multiple_car_tracker():
             car_side1.pop(car_track, None)
             car_side2.pop(car_track, None)
 
+        # --------- OBJECT TRACKING ---------- 
         for car_track in car_tracker.keys():
             tracked_position = car_tracker[car_track].get_position()
 
-            # this is not to get the default size of rectangle for each vehicle. instead it adapts according to the moment and size of the vehicle.
+            # this is not to get the fixed size of rectangle for each object, instead it adapts according to the size of each object
             t_x = int(tracked_position.left())
             t_y = int(tracked_position.top())
             t_w = int(tracked_position.width())
             t_h = int(tracked_position.height())
 
+
+            # spots the vehicle and the color assigned is green
             cv2.rectangle(
                 video_final,
                 (t_x, t_y), (t_x + t_w, t_y + t_h),
                 color=(0, 255, 0), thickness=4
-            )   # spots the vehicle and the color assigned is green
+            ) 
 
+            # tracking the position of the object for the  current frame 
             car_side2[car_track] = [t_x, t_y, t_w, t_h]
+        
 
-        if not (frame_counter % 10):    # yet to figure it out soon.
+
+        # I am executing the detectMultiScale() function only every 10 frames because this function is computationally expensive
+        # Also, in 10 frames, the object is unlikely to move significantly, so it is not necessary to execute it every frame
+        # ---------- OBJECT DETECTION -------------
+        if not (frame_counter % 10):
             gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
             cars = dataset_1.detectMultiScale(
                 gray_scale,
-                scaleFactor=1.3,
+                scaleFactor=1.3, # for accurate detection keep this value low, but for fast detection keep it high
                 minNeighbors=4,
                 minSize=(30, 30),
                 flags=cv2.CASCADE_SCALE_IMAGE
             )
 
+
+            # -------------- ACCURATE DETECTION ------------- (NFR)
             with open(
                 r'V-core\vehicle.csv' and r'V-core\cars-2.csv', 'a', newline=''
-            ) as f_object:    # 2 more dataset to increase detection accuracy from kaggle
+            ) as f_object:    # 2nd dataset is used on top of the detected objects to increase detection accuracy
 
                 for (x, y, w, h) in cars:
                     cv2.rectangle(video, (x, y), (x+w, y+h),
@@ -125,23 +150,28 @@ def multiple_car_tracker():
                     match_car = None
 
                     for car_track in car_tracker.keys():
-                        tracked_position = car_tracker[car_track].get_position(
-                        )
-
+                        tracked_position = car_tracker[car_track].get_position()
+                        
                         t_x = int(tracked_position.left())
                         t_y = int(tracked_position.top())
                         t_w = int(tracked_position.width())
                         t_h = int(tracked_position.height())
 
+                        # to calculate center of the tracked car
                         t_x_bar = t_x + 0.5 * t_w
                         t_y_bar = t_y + 0.5 * t_h
+                        
 
+                        # checking if the center and position of the detected car matches the tracked car
                         if (
                             (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)
                                                                ) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
                         ):
                             match_car = car_track
+                    
 
+                    # if match is not found, create a new tracker
+                    # Therefore, through here we make the list of tracker cars car_tracker
                     if match_car is None:
                         print(f'Creating new tracker {str(current_car)}')
 
@@ -151,10 +181,14 @@ def multiple_car_tracker():
                         )
 
                         car_tracker[current_car] = tracker
-                        # both the axis, width and height
+                        
+                        # storing the position of the object for the starting frame(frame from which the object is detected)
                         car_side1[current_car] = [x, y, w, h]
                         current_car += 1
 
+
+        # Calculating speed of the object from the set of object positions over different frames
+        # --------- SPEED CALCULATION --------------- (FR)
         for i in car_side2.keys():
             if frame_counter % 1 == 0:  # remainder of the frame counter
                 [x1, y1, w1, h1] = car_side1[i]
