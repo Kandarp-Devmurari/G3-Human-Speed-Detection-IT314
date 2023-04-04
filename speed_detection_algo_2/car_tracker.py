@@ -102,8 +102,11 @@ def multiple_car_tracker():
         
 
 
-        # I am executing the detectMultiScale() function only every 10 frames because this function is computationally expensive
-        # Also, in 10 frames, the object is unlikely to move significantly, so it is not necessary to execute it every frame
+        # I am executing the detectMultiScale() function only ..  
+        # every 10 frames because this function is computationally expensive
+        # Also, in 10 frames, the object is unlikely to move significantly, .. 
+        # so it is not necessary to execute it every frame
+        # ---------- FAST PROCESSING ------------- (NFR)
         # ---------- OBJECT DETECTION -------------
         if not (frame_counter % 10):
             gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
@@ -119,7 +122,8 @@ def multiple_car_tracker():
             # -------------- ACCURATE DETECTION ------------- (NFR)
             with open(
                 r'V-core\vehicle.csv' and r'V-core\cars-2.csv', 'a', newline=''
-            ) as f_object:    # 2nd dataset is used on top of the detected objects to increase detection accuracy
+            ) as f_object:    # 2nd dataset is used on top of the detected objects 
+                              # to increase detection accuracy
 
                 for (x, y, w, h) in cars:
                     cv2.rectangle(video, (x, y), (x+w, y+h),
