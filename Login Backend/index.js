@@ -2,9 +2,13 @@ const express = require('express')
 const app = express()
 const connectDB = require('./MongoConnect.js');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+const dotenv = require('dotenv');
 const validator = require('email-validator')
+dotenv.config();
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const User = require('./Model/User.js');
