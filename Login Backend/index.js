@@ -12,6 +12,30 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 });
 
+app.post('/login',async (req,res)=>{
+    const email = req.body.email;
+    const password = req.body.password;
+
+    if(!email || !password){
+        return res.send('Please enter email and password');
+    }
+
+    const userexist = await User.findOne({email: email});
+    if(!userexist){
+        return res.send('User does not exist');
+    }
+
+    if(userexist.password != password){
+        return res.send('Password is incorrect');
+    }
+
+    res.send({
+        "message":'Login successful',
+        "user":userexist
+    });
+
+
+});
 
 app.listen(process.env.PORT, async() => {
     await connectDB();
