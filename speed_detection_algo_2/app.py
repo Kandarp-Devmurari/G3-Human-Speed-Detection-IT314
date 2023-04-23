@@ -7,7 +7,7 @@ import time
 from csv import writer
 import math
 import dlib
-
+from graph import *
 
 app = Flask(__name__)
 
@@ -19,7 +19,6 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
 input = ""
 ALLOWED_VIDEO_EXTENSIONS = {"mkv", "mp4", "avi"}
-
 
 def file_allowed(filename):
     return (
@@ -77,8 +76,8 @@ def vehicle_speed(side1, side2):
 
 def gen():
 
-    dataset_1 = cv2.CascadeClassifier(r"dataset\cars.xml")
-    dataset_2 = cv2.CascadeClassifier(r"dataset\myhaar.xml")
+    dataset_1 = cv2.CascadeClassifier(r"xml-dataset\red-ball-lbp.xml")
+    dataset_2 = cv2.CascadeClassifier(r"xml-dataset\red-ball-lbp.xml")
 
     global input
     inp = os.path.join(app.config["UPLOAD_FOLDER"], input)
@@ -98,68 +97,74 @@ def gen():
     height = 1280
     width = 720
 
-    while True:
-        start_time = time.time()
-        ret, video = video_c.read()
+    if os.path.exists(r"csv-dataset\output.csv"):
+        os.remove(r"csv-dataset\output.csv")
+    with open(r"csv-dataset\output.csv", "a", newline="") as f_object:
+        writer_object = writer(f_object)
+        writer_object.writerow(['object_track_no' , 'frame_no' , 'speed'])
+        
+        while True:
+            start_time = time.time()
+            ret, video = video_c.read()
+            if ret == True:
 
-        if ret == True:
+                # video screen size adjusted and set to full screen
+                video = cv2.resize(video, (height, width))
+                video_final = video.copy()
+                frame_counter += 1  # incrementing frames
 
-            # video screen size adjusted and set to full screen
-            video = cv2.resize(video, (height, width))
-            video_final = video.copy()
-            frame_counter += 1  # incrementing frames
+                delete_car = []
+                for car_track in car_tracker.keys():
+                    quality_tracker = car_tracker[car_track].update(video)
 
-            delete_car = []
-            for car_track in car_tracker.keys():
-                quality_tracker = car_tracker[car_track].update(video)
+                    if quality_tracker < 7:
+                        # the cars which get tracked succesfully will get added to the delete car array.
+                        delete_car.append(car_track)
 
-                if quality_tracker < 7:
-                    # the cars which get tracked succesfully will get added to the delete car array.
-                    delete_car.append(car_track)
+                rectangle_color = (0, 255, 0)
+                for car_track in car_tracker.keys():
+                    tracked_position = car_tracker[car_track].get_position()
 
-            rectangle_color = (0, 255, 0)
-            for car_track in car_tracker.keys():
-                tracked_position = car_tracker[car_track].get_position()
+                    # this is not to get the default size of rectangle for each vehicle. instead it adapts according to the moment and size of the vehicle.
+                    t_x = int(tracked_position.left())
+                    t_y = int(tracked_position.top())
+                    t_w = int(tracked_position.width())
+                    t_h = int(tracked_position.height())
 
-                # this is not to get the default size of rectangle for each vehicle. instead it adapts according to the moment and size of the vehicle.
-                t_x = int(tracked_position.left())
-                t_y = int(tracked_position.top())
-                t_w = int(tracked_position.width())
-                t_h = int(tracked_position.height())
+                    cv2.rectangle(
+                        video_final,
+                        (t_x, t_y), (t_x + t_w, t_y + t_h),
+                        rectangle_color, 2
+                    )  # spots the vehicle and the color assigned is green
 
-                cv2.rectangle(
-                    video_final,
-                    (t_x, t_y), (t_x + t_w, t_y + t_h),
-                    rectangle_color, 2
-                )  # spots the vehicle and the color assigned is green
+                    car_side2[car_track] = [t_x, t_y, t_w, t_h]
 
-                car_side2[car_track] = [t_x, t_y, t_w, t_h]
+                for car_track in delete_car:
+                    print(f"Removed Car ID {car_track} from List trackers")
+                    car_tracker.pop(car_track, None)
+                    car_side1.pop(car_track, None)
+                    car_side2.pop(car_track, None)
 
-            for car_track in delete_car:
-                print(f"Removed Car ID {car_track} from List trackers")
-                car_tracker.pop(car_track, None)
-                car_side1.pop(car_track, None)
-                car_side2.pop(car_track, None)
+                if not (frame_counter % 10):
+                    gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
+                    cars = dataset_1.detectMultiScale(
+                        gray_scale,
+                        scaleFactor=1.3,
+                        minNeighbors=4,
+                        minSize=(30, 30),
+                        flags=cv2.CASCADE_SCALE_IMAGE,
+                    )
 
-            if not (frame_counter % 10):
-                gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
-                cars = dataset_1.detectMultiScale(
-                    gray_scale,
-                    scaleFactor=1.3,
-                    minNeighbors=4,
-                    minSize=(30, 30),
-                    flags=cv2.CASCADE_SCALE_IMAGE,
-                )
-
-                with open(
-                    r"dataset\vehicle.csv" and r"dataset\cars.csv", "a", newline=""
-                ) as f_object:  # 2 more dataset to increase detection accuracy from kagggle
+                    # with open(
+                    #     r"dataset\vehicle.csv", "w", newline=""
+                    # ) as f_object:  # 2 more dataset to increase detection accuracy from kagggle
+                        
 
                     for (x, y, w, h) in cars:
                         cv2.rectangle(video,
-                                      (x, y), (x + w, y + h),
-                                      (255, 0, 0), 2
-                                      )
+                                        (x, y), (x + w, y + h),
+                                        (255, 0, 0), 2
+                                        )
 
                         roi_gray = gray_scale[y: y + h, x: x + w]
                         roi_color = video[y: y + h, x: x + w]
@@ -173,12 +178,12 @@ def gen():
                                 (0, 255, 0), 2
                             )
 
-                            data = str(w) + "," + str(h) + "," + \
-                                str(ew) + "," + str(eh)
+                            # data = str(w) + "," + str(h) + "," + \
+                            #     str(ew) + "," + str(eh)
 
                             # The writerow method writes a row of data into the specified file.
-                            writer_object = writer(f_object)
-                            writer_object.writerow([data])
+                            # writer_object = writer(f_object)
+                            # writer_object.writerow([data])
 
                     for (_x, _y, _w, _h) in cars:
                         x = int(_x)
@@ -223,52 +228,52 @@ def gen():
                             car_side1[current_car] = [x, y, w, h]
                             current_car += 1
 
-            for i in car_side2.keys():
-                if frame_counter % 1 == 0:
-                    [x1, y1, w1, h1] = car_side1[i]
-                    [x2, y2, w2, h2] = car_side2[i]
+                for i in car_side2.keys():
+                    if frame_counter % 1 == 0:
+                        [x1, y1, w1, h1] = car_side1[i]
+                        [x2, y2, w2, h2] = car_side2[i]
 
-                    car_side1[i] = [x2, y2, w2, h2]
+                        car_side1[i] = [x2, y2, w2, h2]
 
-                    if [x1, y1, w1, h1] != [x2, y2, w2, h2]:
-                        if (speed[i] == None or speed[i] == 0) and y1 >= 275 and y1 <= 285:
-                            speed[i] = vehicle_speed(
-                                [x1, y1, w1, h1], [x2, y2, w2, h2])
+                        if [x1, y1, w1, h1] != [x2, y2, w2, h2]:
+                            if (speed[i] == None or speed[i] == 0) and y1 >= 100 and y1 <= 300:
+                                speed[i] = vehicle_speed(
+                                    [x1, y1, w1, h1], [x2, y2, w2, h2])
+                            if speed[i] != None and y1 >= 75:
+                                data = [str(current_car) , str(frame_counter) , str(speed[i])]
+                                writer_object.writerow(data)
+                                cv2.putText(
+                                    video_final, str(int(speed[i])) + " km/hr",
+                                    (int(x1 + w1 / 2), int(y1 - 5)),
+                                    cv2.FONT_HERSHEY_DUPLEX, fontScale=0.75,
+                                    color=(0, 0, 255), thickness=2,
+                                )
 
-                        if speed[i] != None and y1 >= 180:
+                    end_time = time.time()
+                    if not (end_time == start_time):
+                        fps = 1.0 / (end_time - start_time)
 
-                            cv2.putText(
-                                video_final, str(int(speed[i])) + " km/hr",
-                                (int(x1 + w1 / 2), int(y1 - 5)),
-                                cv2.FONT_HERSHEY_DUPLEX, fontScale=0.75,
-                                color=(0, 0, 255), thickness=2,
-                            )
+                cv2.putText(
+                    video_final,
+                    "FPS: " + str(int(fps)),
+                    (900, 480),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.75,
+                    color=(0, 0, 255),
+                    thickness=2,
+                )
 
-                end_time = time.time()
-                if not (end_time == start_time):
-                    fps = 1.0 / (end_time - start_time)
+                frame = cv2.imencode('.jpg', video_final)[1].tobytes()
+                yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                time.sleep(0.1)     # video stream
 
-            cv2.putText(
-                video_final,
-                "FPS: " + str(int(fps)),
-                (900, 480),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=0.75,
-                color=(0, 0, 255),
-                thickness=2,
-            )
-
-            frame = cv2.imencode('.jpg', video_final)[1].tobytes()
-            yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            time.sleep(0.1)     # video stream
-
-        else:
-            print('Video Capture Failed')
-            break
-
+            else:
+                print('Video Capture Failed')
+                break
     print('\nClosing video')
     video_c.release()
     cv2.destroyAllWindows()
+    plot_graph()
 
 
 @app.route('/video_feed')
