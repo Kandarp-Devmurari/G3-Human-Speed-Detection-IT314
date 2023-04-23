@@ -11,7 +11,7 @@ dataset_1 = cv2.CascadeClassifier(r'dataset\cars.xml')
 dataset_2 = cv2.CascadeClassifier(r'dataset\myhaar.xml')
 
 # video
-video_c = cv2.VideoCapture(r'videos\cars.mp4')  
+video_c = cv2.VideoCapture(r'videos\cars.mp4') 
 
 
 # --------- SPEED CALCULATION --------------- (FR)
