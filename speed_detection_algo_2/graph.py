@@ -3,6 +3,7 @@ import pandas as pd
 from  mongo_conn import *
 import glob
 import os
+import gridfs
 
 def plot_graph():
     plt.style.use('bmh')
@@ -41,4 +42,6 @@ def plot_graph():
         fs = gridfs.GridFS(db)
         fs.put(data, filename = file_name)
         print("upload complete")
+    
+    
 

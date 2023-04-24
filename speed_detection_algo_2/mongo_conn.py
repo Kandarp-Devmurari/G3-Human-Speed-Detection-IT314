@@ -1,11 +1,17 @@
 from pymongo import MongoClient
-import gridfs
+from dotenv import load_dotenv
+import os
+
+def configure():
+    load_dotenv()
 
 def mongo_conn():
+    configure()
     try:
-        conn = MongoClient(host='mongodb+srv://kandarpdevmurari:kandarp261002@se-project.txjgzvs.mongodb.net/test', port=27017)
+        conn = MongoClient(host=os.getenv('MONGO_URI'), port=os.getenv('MONGO_PORT'))
         print('MongoDB connected', conn)
         return conn
     except Exception as e:
         print('Error in mongo connection:', e)
+
 
