@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+from  mongo_conn import *
+import glob
+import os
 
 def plot_graph():
     plt.style.use('bmh')
@@ -9,13 +12,19 @@ def plot_graph():
     n1 = tot_list[0]
     n2 = tot_list[-1]
 
+    files = glob.glob('graphs/*')
+    for f in files:
+        os.remove(f)
+
+    conn = mongo_conn()
+    db = conn.SEproject
+
     for i in range(n1, n2+1):
         specified = df.loc[df['object_track_no'] == i]
         if(len(specified) == 0):
             continue
         x = specified['frame_no']
         y = specified['speed']
-        print(y)
         fig = plt.figure()
         plt.xlabel('Frame No')
         plt.ylabel('Speed')
@@ -23,4 +32,13 @@ def plot_graph():
         plt.plot(x, y)
         plt.savefig(r"graphs\{}.png".format(i))
         plt.close(fig)
+
+        file_name = "{}.png".format(i)
+        file_location = "graphs/" + file_name
+        
+        file_data = open(file_location, "rb")
+        data = file_data.read()
+        fs = gridfs.GridFS(db)
+        fs.put(data, filename = file_name)
+        print("upload complete")
 
