@@ -29,8 +29,10 @@ Additional options:
     --set: set arbitrary cmake options e.g. --set CUDA_HOST_COMPILER=/usr/bin/gcc-6.4.0
            passes -DCUDA_HOST_COMPILER=/usr/bin/gcc-6.4.0 to CMake.
 """
+import errno
 import os
 import re
+import stat
 import sys
 import shutil
 import platform

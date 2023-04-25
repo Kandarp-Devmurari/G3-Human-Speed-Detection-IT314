@@ -1,6 +1,6 @@
 wheel
 setuptools
-cmake
+cmake==3.24.0
 icrawler
 pymongo
 python-dotenv
@@ -13,3 +13,4 @@ Werkzeug==2.0.1
 Flask-Debug==0.4.3
 matplotlib
 pandas
+pytest
