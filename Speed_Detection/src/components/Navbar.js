@@ -87,7 +87,7 @@ function Navbar() {
               </Link>
             </li>
 
-            {token === "--" && (
+            {token == "--" && (
               <li>
                 <Link
                   to="/sign-up"
@@ -99,7 +99,7 @@ function Navbar() {
               </li>
             )}
           </ul>
-          {token === "--" && button && (
+          {token == "--" && button && (
             <Button buttonStyle="btn--outline">SIGN UP</Button>
           )}
         </div>
