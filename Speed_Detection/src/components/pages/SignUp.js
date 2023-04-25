@@ -46,7 +46,7 @@ function SignUp() {
         const token = localStorage.getItem("user_email");
         console.log(token);
         navigate("/Upload");
-        window.location.reload(false);
+        // window.location.reload(false);
       }
     }
   };
