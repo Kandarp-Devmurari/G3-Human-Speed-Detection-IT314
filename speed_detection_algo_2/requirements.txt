@@ -1,5 +1,6 @@
 opencv-contrib-python==3.4.13.47
 opencv-python==4.5.3.56
+wheel==0.40.0
 dlib==19.22.1
 requests==2.26.0
 numpy==1.19.5
