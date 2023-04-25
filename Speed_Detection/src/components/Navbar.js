@@ -29,22 +29,22 @@ function Navbar() {
       }
     }
   };
-  const navupdate = () => {
-    console.log("hello ");
-    settoken(localStorage.getItem("user_email"));
-    console.log("token print ", token);
-  };
+  // const navupdate = () => {
+  //   console.log("hello ");
+  //   settoken(localStorage.getItem("user_email"));
+  //   console.log("token print ", token);
+  // };
   // componentDidMount() {
   //   settoken(localStorage.getItem("user_email"));
   // }
 
-  useEffect(() => {
-    console.log("useeffetc");
-    // showButton();
-    settoken(localStorage.getItem("user_email"));
-    console.log("token print ", token);
-    navupdate();
-  }, [token]);
+  // useEffect(() => {
+  //   console.log("useeffetc");
+  //   // showButton();
+  //   settoken(localStorage.getItem("user_email"));
+  //   console.log("token print ", token);
+  //   // navupdate();
+  // }, [token]);
 
   window.addEventListener("resize", showButton);
 
@@ -96,10 +96,12 @@ function Navbar() {
                 >
                   Sign Up
                 </Link>
-                {button && <Button buttonStyle="btn--outline">SIGN UP</Button>}
               </li>
             )}
           </ul>
+          {token === "--" && button && (
+            <Button buttonStyle="btn--outline">SIGN UP</Button>
+          )}
         </div>
       </nav>
     </>
