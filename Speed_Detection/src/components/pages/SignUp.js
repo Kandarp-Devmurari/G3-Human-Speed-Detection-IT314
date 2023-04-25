@@ -39,7 +39,6 @@ function SignUp() {
       console.log("invalid login", data);
     } else {
       window.alert(data.message);
-      // window.alert("Success login");
       if (data.message === "Login successful" && data.user != "--") {
         console.log("Success login", data.message, data.user);
         localStorage.setItem("user_email", data.user.email);
@@ -47,6 +46,7 @@ function SignUp() {
         const token = localStorage.getItem("user_email");
         console.log(token);
         navigate("/Upload");
+        window.location.reload(false);
       }
     }
   };
