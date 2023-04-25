@@ -7,6 +7,8 @@ function SignUp() {
   const navigate = useNavigate();
   const [user, setUser] = useState({ email: "", password: "" });
   let value, id;
+
+  //Form Data
   const handleInput = (e) => {
     // console.log(e.target.value);
     // console.log(e);
@@ -15,6 +17,8 @@ function SignUp() {
     setUser({ ...user, [id]: value });
     console.log(user);
   };
+
+  //Login
   const handleLogin = async (e) => {
     e.preventDefault();
     const { email, password } = user;
@@ -29,16 +33,25 @@ function SignUp() {
       }),
     });
     const data = await res.json();
-    if (data.status === 422 || !data) {
+    console.log("data", data);
+    if (data.status === 400 || !data) {
       window.alert("Invalid login");
       console.log("invalid login", data);
     } else {
-      window.alert("Success login");
-      console.log("Success login", data);
-
-      navigate("/Upload");
+      window.alert(data.message);
+      // window.alert("Success login");
+      if (data.message === "Login successful" && data.user != "--") {
+        console.log("Success login", data.message, data.user);
+        localStorage.setItem("user_email", data.user.email);
+        // console.log(localStorage);
+        const token = localStorage.getItem("user_email");
+        console.log(token);
+        navigate("/Upload");
+      }
     }
   };
+
+  //SignUp
   const handleSignUp = async (e) => {
     e.preventDefault();
     const { email, password } = user;
@@ -60,9 +73,8 @@ function SignUp() {
       console.log("invalid register", data);
     } else {
       window.alert("Success");
-      console.log("Success", data);
-
-      navigate("/Upload");
+      console.log("Success", data.message, data.user);
+      setActiveForm("login");
     }
   };
 
