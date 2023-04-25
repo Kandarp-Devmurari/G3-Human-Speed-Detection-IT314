@@ -8,10 +8,8 @@ def configure():
 def mongo_conn():
     configure()
     try:
-        conn = MongoClient(host=os.getenv('MONGO_URI'), port=os.getenv('MONGO_PORT'))
+        conn = MongoClient(host=os.getenv('MONGO_URI'), port=int(os.getenv('MONGO_PORT')))
         print('MongoDB connected', conn)
         return conn
     except Exception as e:
         print('Error in mongo connection:', e)
-
-

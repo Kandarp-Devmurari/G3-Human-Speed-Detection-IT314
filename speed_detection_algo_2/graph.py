@@ -42,6 +42,4 @@ def plot_graph():
         fs = gridfs.GridFS(db)
         fs.put(data, filename = file_name)
         print("upload complete")
-    
-    
-
+        os.remove(file_location)

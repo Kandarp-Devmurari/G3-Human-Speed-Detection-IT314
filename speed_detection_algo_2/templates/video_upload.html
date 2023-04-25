@@ -23,7 +23,7 @@
 		Detector</h2>
 	<br>
 	<p>
-		{% with messages = get_flashed_messages() %}
+		<!-- {% with messages = get_flashed_messages() %}
 		{% if messages %}
 	<ul>
 		{% for message in messages %}
@@ -31,9 +31,9 @@
 		{% endfor %}
 	</ul>
 	{% endif %}
-	{% endwith %}
+	{% endwith %} -->
 	</p>
-	<div class="w-500 p-4 shadow-sm p-3 mb-5 bg-secondary rounded">
+	<div class="w-30 p-4 shadow-sm p-3 mb-5 bg-secondary rounded">
 		<form method="post" action="/upload" enctype="multipart/form-data">
 			<h4 class="fw-light fs-3">Upload the Video Here</h4>
 			<br>
@@ -42,6 +42,15 @@
 					<input type="file" name="file" autocomplete="off" required class="d-flex-content">
 				</p>
 			</dl>
+			<p>
+				<input type="label" name="detect_object" autocomplete="off" class="d-flex-content" placeholder="Enter object to detect" required>
+			</p>
+			<p>
+				<input type="label" name="positive_image" autocomplete="off" class="d-flex-content" placeholder="postive image prompt" required>
+			</p>
+			<p>
+				<input type="label" name="negative_image" autocomplete="off" class="d-flex-content" placeholder="negative image prompt" required>
+			</p>
 			<p>
 				<input type="submit" value="Submit" class="btn btn-primary">
 			</p>
