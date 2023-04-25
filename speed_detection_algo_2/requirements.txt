@@ -13,4 +13,3 @@ Werkzeug==2.0.1
 Flask-Debug==0.4.3
 matplotlib
 pandas
-dlib\dlib-19.19.0-cp37-cp37m-win_amd64.whl
