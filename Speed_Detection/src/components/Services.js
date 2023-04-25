@@ -40,7 +40,7 @@ function Services() {
 
   return (
     <div>
-      <form>
+      <form className="upload-form">
         <input type="file" onChange={handleFileChange} multiple />
 
         <ul>

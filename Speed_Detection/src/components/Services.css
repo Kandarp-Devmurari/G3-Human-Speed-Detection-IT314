@@ -1,4 +1,4 @@
-form {
+.upload-form {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -8,7 +8,7 @@ form {
   height: 200px;
   border: 4px dashed #fff;
 }
-form p {
+.upload-form p {
   width: 100%;
   height: 100%;
   text-align: center;
@@ -16,7 +16,7 @@ form p {
   color: #ffffff;
   font-family: Arial;
 }
-form input {
+.upload-form input {
   position: absolute;
   margin: 0;
   padding: 0;
@@ -25,7 +25,7 @@ form input {
   outline: none;
   opacity: 0;
 }
-form button {
+.upload-form button {
   margin: 0;
   color: #fff;
   background: #16a085;
@@ -39,10 +39,10 @@ form button {
   transition: all 0.2s ease;
   outline: none;
 }
-form button:hover {
+.upload-form button:hover {
   background: #149174;
   color: #0c5645;
 }
-form button:active {
+.upload-form button:active {
   border: 0;
 }

@@ -2,25 +2,49 @@ import React, { useState, useEffect } from "react";
 import { Button } from "./Button";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
+const { useRef, useLayoutEffect } = React;
 
 function Navbar() {
+  const [token, settoken] = useState();
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
 
   const handleClick = () => setClick(!click);
   const closeMobileMenu = () => setClick(false);
 
+  const firstUpdate = useRef(true);
+  useLayoutEffect(() => {
+    console.log("hello ");
+    showButton();
+    settoken(localStorage.getItem("user_email"));
+    console.log("token print ", token);
+  });
+
   const showButton = () => {
-    if (window.innerWidth <= 960) {
-      setButton(false);
-    } else {
-      setButton(true);
+    if (token == "--") {
+      if (window.innerWidth <= 960) {
+        setButton(false);
+      } else {
+        setButton(true);
+      }
     }
   };
+  const navupdate = () => {
+    console.log("hello ");
+    settoken(localStorage.getItem("user_email"));
+    console.log("token print ", token);
+  };
+  // componentDidMount() {
+  //   settoken(localStorage.getItem("user_email"));
+  // }
 
   useEffect(() => {
-    showButton();
-  }, []);
+    console.log("useeffetc");
+    // showButton();
+    settoken(localStorage.getItem("user_email"));
+    console.log("token print ", token);
+    navupdate();
+  }, [token]);
 
   window.addEventListener("resize", showButton);
 
@@ -42,15 +66,17 @@ function Navbar() {
                 Home
               </Link>
             </li>
-            <li className="nav-item">
-              <Link
-                to="/Upload"
-                className="nav-links"
-                onClick={closeMobileMenu}
-              >
-                Upload
-              </Link>
-            </li>
+            {token !== "--" && (
+              <li className="nav-item">
+                <Link
+                  to="/Upload"
+                  className="nav-links"
+                  onClick={closeMobileMenu}
+                >
+                  Upload
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link
                 to="/AboutUs"
@@ -61,17 +87,19 @@ function Navbar() {
               </Link>
             </li>
 
-            <li>
-              <Link
-                to="/sign-up"
-                className="nav-links-mobile"
-                onClick={closeMobileMenu}
-              >
-                Sign Up
-              </Link>
-            </li>
+            {token === "--" && (
+              <li>
+                <Link
+                  to="/sign-up"
+                  className="nav-links-mobile"
+                  onClick={closeMobileMenu}
+                >
+                  Sign Up
+                </Link>
+                {button && <Button buttonStyle="btn--outline">SIGN UP</Button>}
+              </li>
+            )}
           </ul>
-          {button && <Button buttonStyle="btn--outline">SIGN UP</Button>}
         </div>
       </nav>
     </>
