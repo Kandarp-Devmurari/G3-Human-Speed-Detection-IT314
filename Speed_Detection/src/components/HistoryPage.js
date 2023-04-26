@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
 // import "./HistoryPage.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -11,6 +12,8 @@ import { Button, CardActionArea, CardActions } from "@mui/material";
 function HistoryPage() {
   const [history, setHistory] = useState([]);
   const token = localStorage.getItem("user_email");
+  const navigate = useNavigate();
+  if (!token) navigate("/sign-up");
   // useEffect(async () => {
   //   // axios
   //   //   .post("/history", {
@@ -37,7 +40,7 @@ function HistoryPage() {
   //   });
   // }, []);
 
-  const [userEmail, setEmail] = useState('');
+  const [userEmail, setEmail] = useState("");
   // const [historyData, setHistoryData] = useState([]);
 
   useEffect(() => {
@@ -45,9 +48,9 @@ function HistoryPage() {
     console.log("email jo bhej raha hun", userEmail);
     const fetchHistoryData = async () => {
       try {
-        const { data } = await axios.post('/history', { userEmail });
+        const { data } = await axios.post("/history", { userEmail });
         setHistory(data);
-        console.log("history ka data",data);
+        console.log("history ka data", data);
       } catch (error) {
         console.log(error);
       }
@@ -87,42 +90,42 @@ function HistoryPage() {
         </Button>
       </CardActions> */}
       </Card>
-      {history.length > 0 && history.map((item) => (
-        <Card
-          // key={item.id}
-          sx={{ maxWidth: 345 }}
-        >
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image={item.filename}
-              alt="graph"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {item.userEmail}
-              </Typography>
-              <Typography
-                sx={{ fontSize: 14 }}
-                color="text.secondary"
-                gutterBottom
-              >
-                {item.uploadDate}
-              </Typography>
-              {/* <Typography variant="body2" color="text.secondary">
+      {history.length > 0 &&
+        history.map((item) => (
+          <Card
+            // key={item.id}
+            sx={{ maxWidth: 345 }}
+          >
+            <CardActionArea>
+              <CardMedia
+                component="img"
+                height="140"
+                image={item.filename}
+                alt="graph"
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h4" component="div">
+                  {item.userEmail}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: 14 }}
+                  color="text.secondary"
+                  gutterBottom
+                >
+                  {item.uploadDate}
+                </Typography>
+                {/* <Typography variant="body2" color="text.secondary">
           Avg. Speed: {item.speed}
         </Typography> */}
-            </CardContent>
-          </CardActionArea>
-          {/* <CardActions>
+              </CardContent>
+            </CardActionArea>
+            {/* <CardActions>
       <Button size="small" color="primary">
         Share
       </Button>
     </CardActions> */}
-        </Card>
-      ))}
-
+          </Card>
+        ))}
     </div>
   );
 }
