@@ -6,8 +6,13 @@ import cv2
 import time
 from csv import writer
 import math
-import dlib
+# import dlib
 from graph import *
+from image_crawler.negative import *
+from image_crawler.positive import *
+from xml_generator import *
+import _dlib_pybind11
+
 
 app = Flask(__name__)
 
@@ -31,7 +36,6 @@ def file_allowed(filename):
 def home():
     return render_template("video_upload.html")
 
-
 @app.route("/upload", methods=['GET', 'POST'])
 def upload_file():
     if request.method == "POST":
@@ -53,8 +57,14 @@ def upload_file():
             input = filename
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
+            global xml_file, positive_prompt, negative_prompt
+            xml_file, positive_prompt, negative_prompt = request.form['detect_object'], request.form['positive_image'], request.form['negative_image']
+
             flash("File successfully uploaded")
             return render_template("upload.html", fname=filename)
+        
+            
+
 
         else:
             flash("Allowed image types are -> mkv, mp4, avi")
@@ -75,9 +85,16 @@ def vehicle_speed(side1, side2):
 
 
 def gen():
+    xml_exists = os.path.isfile(fr"xml-dataset\{xml_file}.xml")
+    if xml_exists == False:
+        postive_image_generator(positive_prompt,100)
+        negative_image_generator(negative_prompt,100)
+        generate_xml(xml_file)
+    
 
-    dataset_1 = cv2.CascadeClassifier(r"xml-dataset\red-ball-lbp.xml")
-    dataset_2 = cv2.CascadeClassifier(r"xml-dataset\red-ball-lbp.xml")
+
+    dataset_1 = cv2.CascadeClassifier(fr"xml-dataset\{xml_file}.xml")
+    dataset_2 = cv2.CascadeClassifier(fr"xml-dataset\{xml_file}.xml")
 
     global input
     inp = os.path.join(app.config["UPLOAD_FOLDER"], input)
@@ -219,9 +236,13 @@ def gen():
                         if match_car is None:
                             print(f"Creating new tracker {str(current_car)}")
 
-                            tracker = dlib.correlation_tracker()
+                            # tracker = dlib.correlation_tracker()
+                            # tracker.start_track(
+                            #     video, dlib.rectangle(x, y, x + w, y + h))
+                            
+                            tracker = _dlib_pybind11.correlation_tracker()
                             tracker.start_track(
-                                video, dlib.rectangle(x, y, x + w, y + h))
+                                video, _dlib_pybind11.rectangle(x, y, x + w, y + h))
 
                             car_tracker[current_car] = tracker
                             # both the axis, width and height
@@ -281,5 +302,5 @@ def video_feed():
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-if __name__ == "__main__":
-    app.run(port=3606, debug=True)
+# if __name__ == "__main__":
+#     app.run(port=3606, debug=True)
