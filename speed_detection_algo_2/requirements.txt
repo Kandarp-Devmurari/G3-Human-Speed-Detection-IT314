@@ -14,3 +14,4 @@ Flask-Debug==0.4.3
 matplotlib
 pandas
 pytest
+dlib-bin==19.24.1
