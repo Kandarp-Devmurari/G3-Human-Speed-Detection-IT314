@@ -70,21 +70,24 @@ def upload_file():
             flash("Allowed image types are -> mkv, mp4, avi")
             return redirect(request.url)
 
-
+# --------- SPEED CALCULATION --------------- (FR)
 def vehicle_speed(side1, side2):
-    # pixels = math.sqrt(si1[0] + si2[1])
+    # calculating distance moved by the object from the difference 
+    # between the object pixels between 2 frames 
     pixels = math.sqrt(
         math.pow(side2[0] - side1[0], 2) + math.pow(side2[1] - side1[1], 2)
     )
-    # Netpbm color image format -> lowest common denominator color image file format.
-    ppm = 16.8       # pixels per minut
+    ppm = 16.8       # pixels per minute
     meters = pixels / ppm
     fps = 18
     speed = meters * fps * 3.6
     return speed
 
-
+# multiple car tracker fullfilling the Multi-detection Functional requirement
+# -------- MULTI DETECTION ----------- (FR)
 def gen():
+    # creating a dataset by using the haar cascade classifier
+    # the xml files can be created using the positive and negative images of the object to be detected.
     xml_exists = os.path.isfile(fr"xml-dataset\{xml_file}.xml")
     if xml_exists == False:
         postive_image_generator(positive_prompt,100)
@@ -122,23 +125,34 @@ def gen():
         
         while True:
             start_time = time.time()
+
+            # .read() returns a tuple, of which video stores the frame of the video
             ret, video = video_c.read()
             if ret == True:
 
-                # video screen size adjusted and set to full screen
+                # adds the video to the screen and adjusts the size
                 video = cv2.resize(video, (height, width))
                 video_final = video.copy()
-                frame_counter += 1  # incrementing frames
+
+                # incrementing frames repeatedly
+                frame_counter += 1
 
                 delete_car = []
+
+                # ---------- QUALITY DETECTION ------------- 
                 for car_track in car_tracker.keys():
                     quality_tracker = car_tracker[car_track].update(video)
 
+                    # if the quality of tracker(ie accuracy and reliability of the correlation tracker in detection) is less than 7
+                    #, then the tracker is removed from the car_tracker list 
+                    # This prevents false positives and false negatives.
+                    # -------------- ACCURATE DETECTION ------------- (NFR)
                     if quality_tracker < 7:
-                        # the cars which get tracked succesfully will get added to the delete car array.
                         delete_car.append(car_track)
 
                 rectangle_color = (0, 255, 0)
+
+                # --------- OBJECT TRACKING ---------- 
                 for car_track in car_tracker.keys():
                     tracked_position = car_tracker[car_track].get_position()
 
@@ -148,12 +162,13 @@ def gen():
                     t_w = int(tracked_position.width())
                     t_h = int(tracked_position.height())
 
+                    # spots the vehicle and the color assigned is green
                     cv2.rectangle(
                         video_final,
                         (t_x, t_y), (t_x + t_w, t_y + t_h),
                         rectangle_color, 2
-                    )  # spots the vehicle and the color assigned is green
-
+                    )  
+                    # tracking the position of the object for the  current frame
                     car_side2[car_track] = [t_x, t_y, t_w, t_h]
 
                 for car_track in delete_car:
@@ -162,21 +177,26 @@ def gen():
                     car_side1.pop(car_track, None)
                     car_side2.pop(car_track, None)
 
+
+                # I am executing the detectMultiScale() function only ..  
+                # every 10 frames because this function is computationally expensive
+                # Also, in 10 frames, the object is unlikely to move significantly, .. 
+                # so it is not necessary to execute it every frame
+                # ---------- FAST PROCESSING ------------- (NFR)
+                # ---------- OBJECT DETECTION -------------
                 if not (frame_counter % 10):
                     gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
                     cars = dataset_1.detectMultiScale(
                         gray_scale,
-                        scaleFactor=1.3,
+                        scaleFactor=1.3, # for accurate detection keep this value low, but for fast detection keep it high
                         minNeighbors=4,
                         minSize=(30, 30),
                         flags=cv2.CASCADE_SCALE_IMAGE,
                     )
 
-                    # with open(
-                    #     r"dataset\vehicle.csv", "w", newline=""
-                    # ) as f_object:  # 2 more dataset to increase detection accuracy from kagggle
-                        
-
+                    # -------------- ACCURATE DETECTION ------------- (NFR)
+                    # 2nd dataset is used on top of the detected objects 
+                    # to increase detection accuracy
                     for (x, y, w, h) in cars:
                         cv2.rectangle(video,
                                         (x, y), (x + w, y + h),
@@ -194,13 +214,6 @@ def gen():
                                 (ex + ew, ey + eh),
                                 (0, 255, 0), 2
                             )
-
-                            # data = str(w) + "," + str(h) + "," + \
-                            #     str(ew) + "," + str(eh)
-
-                            # The writerow method writes a row of data into the specified file.
-                            # writer_object = writer(f_object)
-                            # writer_object.writerow([data])
 
                     for (_x, _y, _w, _h) in cars:
                         x = int(_x)
@@ -222,9 +235,11 @@ def gen():
                             t_w = int(tracked_position.width())
                             t_h = int(tracked_position.height())
 
+                            # to calculate center of the tracked car
                             t_x_bar = t_x + 0.5 * t_w
                             t_y_bar = t_y + 0.5 * t_h
 
+                            # checking if the center and position of the detected car matches the tracked car
                             if (
                                 (t_x <= x_bar <= (t_x + t_w))
                                 and (t_y <= y_bar <= (t_y + t_h))
@@ -233,6 +248,9 @@ def gen():
                             ):
                                 match_car = car_track
 
+
+                        # if match is not found, create a new tracker
+                        # Therefore, through here we make the list of tracker cars car_tracker
                         if match_car is None:
                             print(f"Creating new tracker {str(current_car)}")
 
@@ -245,10 +263,13 @@ def gen():
                                 video, _dlib_pybind11.rectangle(x, y, x + w, y + h))
 
                             car_tracker[current_car] = tracker
-                            # both the axis, width and height
+                            # storing the position of the object for the starting frame(frame from which the object is detected)
                             car_side1[current_car] = [x, y, w, h]
                             current_car += 1
 
+
+                # Calculating speed of the object from the set of object positions over different frames
+                # --------- SPEED CALCULATION --------------- (FR)
                 for i in car_side2.keys():
                     if frame_counter % 1 == 0:
                         [x1, y1, w1, h1] = car_side1[i]
@@ -262,10 +283,11 @@ def gen():
                                     [x1, y1, w1, h1], [x2, y2, w2, h2])
                             if speed[i] != None and y1 >= 75:
                                 data = [str(current_car) , str(frame_counter) , str(speed[i])]
+                                # The writerow method writes a row of data into the specified file.
                                 writer_object.writerow(data)
-                                cv2.putText(
+                                cv2.putText(                                    # speed of the vehicle part
                                     video_final, str(int(speed[i])) + " km/hr",
-                                    (int(x1 + w1 / 2), int(y1 - 5)),
+                                    (int(x1 + w1 / 2), int(y1 - 5)),            # position of the text
                                     cv2.FONT_HERSHEY_DUPLEX, fontScale=0.75,
                                     color=(0, 0, 255), thickness=2,
                                 )
@@ -302,5 +324,5 @@ def video_feed():
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-# if __name__ == "__main__":
-#     app.run(port=3606, debug=True)
+if __name__ == "__main__":
+    app.run(port=3606, debug=True)
