@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "./Button";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
+import DashBoard from "./pages/DashBoard";
 const { useRef, useLayoutEffect } = React;
 
 function Navbar() {
@@ -21,7 +22,7 @@ function Navbar() {
   });
 
   const showButton = () => {
-    if (token == "--") {
+    if (!token) {
       if (window.innerWidth <= 960) {
         setButton(false);
       } else {
@@ -38,13 +39,13 @@ function Navbar() {
   //   settoken(localStorage.getItem("user_email"));
   // }
 
-  // useEffect(() => {
-  //   console.log("useeffetc");
-  //   // showButton();
-  //   settoken(localStorage.getItem("user_email"));
-  //   console.log("token print ", token);
-  //   // navupdate();
-  // }, [token]);
+  useEffect(() => {
+    console.log("useeffetc");
+    // showButton();
+    settoken(localStorage.getItem("user_email"));
+    console.log("token print ", token);
+    // navupdate();
+  }, [token]);
 
   window.addEventListener("resize", showButton);
 
@@ -66,7 +67,7 @@ function Navbar() {
                 Home
               </Link>
             </li>
-            {token !== "--" && (
+            {token && (
               <li className="nav-item">
                 <Link
                   to="/Upload"
@@ -87,7 +88,7 @@ function Navbar() {
               </Link>
             </li>
 
-            {token == "--" && (
+            {!token ? (
               <li>
                 <Link
                   to="/sign-up"
@@ -97,9 +98,19 @@ function Navbar() {
                   Sign Up
                 </Link>
               </li>
+            ) : (
+              <li>
+                <Link
+                  to="/dashBoard"
+                  className="nav-links"
+                  onClick={closeMobileMenu}
+                >
+                  DashBoard
+                </Link>
+              </li>
             )}
           </ul>
-          {token == "--" && button && (
+          {!token && button && (
             <Button buttonStyle="btn--outline">SIGN UP</Button>
           )}
         </div>

@@ -78,7 +78,7 @@ const AccountCard = () => {
 
   const handleLogOut = () => {
     // logout logic
-    localStorage.setItem("user_email", "--");
+    localStorage.removeItem("user_email");
     navigate("/");
     // window.location.reload(false);
   };

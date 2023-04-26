@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-// import "./SignUp.css";
-// import "../../App.css";
+import "./SignUp.css";
+import "../../App.css";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -197,8 +197,10 @@ function SignUp() {
   return (
     <>
       <video src="/videos/video-1.mp4" autoPlay loop muted />
-      <div className="container">
-        {activeForm === "login" ? renderLoginForm() : renderSignupForm()}
+      <div className="par_div" id="par_div">
+        <div className="container">
+          {activeForm === "login" ? renderLoginForm() : renderSignupForm()}
+        </div>
       </div>
     </>
   );
