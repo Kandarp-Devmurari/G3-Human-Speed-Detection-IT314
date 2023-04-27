@@ -80,7 +80,7 @@ const AccountCard = () => {
     // logout logic
     localStorage.removeItem("user_email");
     navigate("/");
-    // window.location.reload(false);
+    window.location.reload(false);
   };
 
   return (

@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.set('view engine', '');
 
 const Output = require("./Model/Outputgraph.js"); // Import User model from Model/User.js
+const Chunk = require("./Model/chunks.js"); // Import User model from Model/chunks.js
 const User = require("./Model/User.js"); // Import User model from Model/User.js
 const { default: mongoose } = require("mongoose");
 
@@ -107,9 +108,15 @@ app.post("/login", async (req, res) => {
 // })
 app.post("/history", async (req, res) => {
   const email = req.body.userEmail;
-  // const data = await Output.find({ userEmail: email });
   const data = await Output.find({});
-  res.json(data);
+  var binData = new Array();
+  // myObject = Object.assign(myObject, {"occupation": "engineer"});
+  for (var i = 0; i < data.length; i++) {
+    const temp = await Chunk.findOne({ files_id: data[i]._id });
+    binData.push(temp.data.toString("base64"));
+  }
+  var data3 = new Array(data, binData);
+  res.send(data3);
 
   // change /temp to actual url
   // change 'userEmail' to actual field in schema
