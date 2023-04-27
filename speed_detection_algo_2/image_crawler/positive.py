@@ -2,7 +2,7 @@ from icrawler.builtin import BingImageCrawler, GoogleImageCrawler
 import os
 import shutil
 
-def postive_image_generator(object,num,):
+def positive_image_generator(object,num,):
     path = "C:/Users/kanda/Desktop/SE_dataset/new-dataset"
     if not os.path.exists(path):
         os.mkdir(path)

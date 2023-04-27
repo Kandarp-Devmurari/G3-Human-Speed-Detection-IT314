@@ -12,6 +12,7 @@ from image_crawler.negative import *
 from image_crawler.positive import *
 from xml_generator import *
 import _dlib_pybind11
+from multiprocessing import Process
 
 
 app = Flask(__name__)
@@ -34,10 +35,17 @@ def file_allowed(filename):
 
 @app.route("/")
 def home():
+    print("home")
     return render_template("video_upload_new.html")
+
+# @app.route("/", methods=["GET", "POST"])
+# def user_details():
+
+
 
 @app.route("/upload", methods=['GET', 'POST'])
 def upload_file():
+    print("upload")
     if request.method == "POST":
         # check if the post request has the file part
         if "file" not in request.files:
@@ -62,13 +70,11 @@ def upload_file():
 
             flash("File successfully uploaded")
             return render_template("upload.html", fname=filename)
-        
-            
-
-
         else:
             flash("Allowed image types are -> mkv, mp4, avi")
             return redirect(request.url)
+        
+
 
 # --------- SPEED CALCULATION --------------- (FR)
 def vehicle_speed(side1, side2):
@@ -90,8 +96,13 @@ def gen():
     # the xml files can be created using the positive and negative images of the object to be detected.
     xml_exists = os.path.isfile(fr"xml-dataset\{xml_file}.xml")
     if xml_exists == False:
-        postive_image_generator(positive_prompt,100)
-        negative_image_generator(negative_prompt,100)
+        # parallel processing to generate positive and negative images
+        p1 = Process(target=positive_image_generator, args=(positive_prompt,100))
+        p2 = Process(target=negative_image_generator, args=(negative_prompt,100))
+        p1.start()
+        p2.start()
+        p1.join()
+        p2.join()
         generate_xml(xml_file)
     
 
@@ -307,8 +318,8 @@ def gen():
                 )
 
                 frame = cv2.imencode('.jpg', video_final)[1].tobytes()
-                yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-                time.sleep(0.1)     # video stream
+                yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                # time.sleep(0.1)     # video stream
 
             else:
                 print('Video Capture Failed')
@@ -321,6 +332,7 @@ def gen():
 
 @app.route('/video_feed')
 def video_feed():
+    print('Starting video stream')
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

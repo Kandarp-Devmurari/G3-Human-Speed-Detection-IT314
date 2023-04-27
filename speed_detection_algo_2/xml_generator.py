@@ -3,7 +3,7 @@ import time
 import shutil
 
 def generate_xml(file_name):
-    # os.system('cmd /c ""C:\Program Files\Cascade Trainer GUI\Cascade-Trainer-GUI.exe" -d -f .\cascade_trainer_settings.ini"')
+    # os.system('cmd /c ""C:\Program Files\Cascade Trainer GUI\Cascade-Trainer-GUI.exe" -f ".\cascade_trainer_settings.ini""')
     os.system('cmd /c ""C:\Program Files\Cascade Trainer GUI\Cascade-Trainer-GUI.exe""')
 
 
