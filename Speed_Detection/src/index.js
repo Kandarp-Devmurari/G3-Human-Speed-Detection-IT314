@@ -7,9 +7,9 @@ import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <App />
+  // </React.StrictMode>
 );
 {
   /* <script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>; */

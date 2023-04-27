@@ -45,10 +45,25 @@ function SignUp() {
         // console.log(localStorage);
         const token = localStorage.getItem("user_email");
         console.log(token);
+        const fl_post = sendtoflask();
+        console.log("fl_post", fl_post);
         navigate("/Upload");
-        // window.location.reload(false);
+        window.location.reload(false);
       }
     }
+  };
+  const sendtoflask = async () => {
+    const res = await fetch("/user_email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON({
+        user_email: localStorage.getItem("user_email"),
+      }),
+    });
+    const data = await res.json();
+    return data.result;
   };
 
   //SignUp

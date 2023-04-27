@@ -7,6 +7,7 @@ import AccountCard from "../AccountCard";
 const DashBoard = () => {
   return (
     <>
+      <video src="/videos/video-1.mp4" autoPlay loop muted />
       <AccountCard />
       <HistoryPage />
     </>
