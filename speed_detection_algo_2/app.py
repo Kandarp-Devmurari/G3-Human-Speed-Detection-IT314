@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, redirect, flash, session, url_for
+from flask import Flask, render_template, request, Response, redirect, flash, session, url_for,jsonify
 from werkzeug.utils import secure_filename
 import os
 import time
@@ -6,16 +6,17 @@ import cv2
 import time
 from csv import writer
 import math
-# import dlib
 from graph import *
 from image_crawler.negative import *
 from image_crawler.positive import *
 from xml_generator import *
 import _dlib_pybind11
 from multiprocessing import Process
+from dotenv import load_dotenv
 
 
-app = Flask(__name__)
+app = Flask(__name__) 
+email_id = ""
 
 app.secret_key = "secret key"
 UPLOAD_FOLDER = r"static\upload"
@@ -38,9 +39,12 @@ def home():
     print("home")
     return render_template("video_upload_new.html")
 
-# @app.route("/", methods=["GET", "POST"])
-# def user_details():
-
+@app.route("/user_email", methods=["POST"])
+def user_details():
+    data = request.get_json()
+    email_id = data['user_email']
+    os.environ["USER_EMAIL"] = email_id
+    return jsonify({'result':'Success'})
 
 
 @app.route("/upload", methods=['GET', 'POST'])

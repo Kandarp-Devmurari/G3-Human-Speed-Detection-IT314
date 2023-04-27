@@ -5,6 +5,7 @@ import glob
 import os
 import gridfs
 
+
 def plot_graph():
     plt.style.use('bmh')
     df = pd.read_csv(r"csv-dataset\output.csv")
@@ -40,7 +41,7 @@ def plot_graph():
         file_data = open(file_location, "rb")
         data = file_data.read()
         fs = gridfs.GridFS(db)
-        fs.put(data, filename = file_name)
+        fs.put(data, filename = file_name, user_email = os.getenv('EMAIL_ID'))
         print("upload complete")
 
     files = glob.glob('graphs/*')
