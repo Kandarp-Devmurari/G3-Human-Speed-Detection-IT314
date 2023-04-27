@@ -167,7 +167,7 @@ function HistoryPage() {
       // setHistory(data);
       console.log("history ka data", data);
       for (let i = 0; i < data[0].length; i++) {
-        console.log("for loop chaL raha hai");
+        // console.log("for loop chaL raha hai");
         let final = {
           _id: data[0][i]._id,
           filename: data[0][i].filename,
@@ -176,10 +176,10 @@ function HistoryPage() {
           chunkSize: data[0][i].chunkSize,
         };
         // window.location.reload();
-        console.log("set data ke upar");
+        // console.log("set data ke upar");
         // setdata1([...data1, final]);
         data1.push(final);
-        console.log(final.filename);
+        // console.log(final.filename);
       }
       setdata2(data1);
       console.log("data1", data1);

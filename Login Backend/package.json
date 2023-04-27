@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "server": "nodemon index.js"
+    "server": "nodemon index.js",
+    "test":"mocha tests/* --timeout 100000"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",

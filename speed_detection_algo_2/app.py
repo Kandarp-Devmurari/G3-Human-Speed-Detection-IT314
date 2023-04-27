@@ -13,9 +13,11 @@ from xml_generator import *
 import _dlib_pybind11
 from multiprocessing import Process
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 
 app = Flask(__name__) 
+CORS(app)
 email_id = ""
 
 app.secret_key = "secret key"
@@ -43,6 +45,7 @@ def home():
 def user_details():
     data = request.get_json()
     email_id = data['user_email']
+    print(email_id)
     os.environ["USER_EMAIL"] = email_id
     return jsonify({'result':'Success'})
 

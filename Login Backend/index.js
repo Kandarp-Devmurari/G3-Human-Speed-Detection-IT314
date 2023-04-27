@@ -106,12 +106,12 @@ app.post("/login", async (req, res) => {
 //   // change req.body.email to actual variable name => req.body.<variable name>
 
 // })
-app.post("/history", async (req, res) => {
+app.post("/history", async (req, res) => { 
   const email = req.body.userEmail;
   const data = await Output.find({});
   var binData = new Array();
   // myObject = Object.assign(myObject, {"occupation": "engineer"});
-  for (var i = 0; i < data.length; i++) {
+  for (var i = 0; i < data.length; i++) { 
     const temp = await Chunk.findOne({ files_id: data[i]._id });
     binData.push(temp.data.toString("base64"));
   }

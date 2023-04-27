@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./SignUp.css";
 import "../../App.css";
 
@@ -45,24 +46,20 @@ function SignUp() {
         // console.log(localStorage);
         const token = localStorage.getItem("user_email");
         console.log(token);
-        const fl_post = sendtoflask();
+        const fl_post = await sendtoflask();
         console.log("fl_post", fl_post);
-        navigate("/Upload");
-        window.location.reload(false);
+        window.location.href = "http://127.0.0.1:3606/";
+
+        // navigate("http://localhost:3606/video_upload_new");
+        // window.location.reload(false);
       }
     }
   };
   const sendtoflask = async () => {
-    const res = await fetch("/user_email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON({
-        user_email: localStorage.getItem("user_email"),
-      }),
-    });
-    const data = await res.json();
+    const user_email = localStorage.getItem("user_email");
+    const res = await axios.post("http://localhost:3606/user_email", { user_email });
+    const data = res.data; // Use res.data instead of res.json()
+    console.log("data", data);
     return data.result;
   };
 
