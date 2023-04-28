@@ -45,7 +45,6 @@ def home():
 def user_details():
     data = request.get_json()
     email_id = data['user_email']
-    print(email_id)
     os.environ["USER_EMAIL"] = email_id
     return jsonify({'result':'Success'})
 

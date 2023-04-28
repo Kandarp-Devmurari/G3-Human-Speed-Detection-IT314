@@ -41,7 +41,7 @@ def plot_graph():
         file_data = open(file_location, "rb")
         data = file_data.read()
         fs = gridfs.GridFS(db)
-        fs.put(data, filename = file_name, user_email = os.getenv('EMAIL_ID'))
+        fs.put(data, filename = file_name, user_email = os.getenv('USER_EMAIL'))
         print("upload complete")
 
     files = glob.glob('graphs/*')
