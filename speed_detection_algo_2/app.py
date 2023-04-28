@@ -275,9 +275,12 @@ def gen():
                             # tracker.start_track(
                             #     video, dlib.rectangle(x, y, x + w, y + h))
                             
-                            tracker = _dlib_pybind11.correlation_tracker()
-                            tracker.start_track(
-                                video, _dlib_pybind11.rectangle(x, y, x + w, y + h))
+                            try:
+                                tracker = _dlib_pybind11.correlation_tracker()
+                                tracker.start_track(
+                                    video, _dlib_pybind11.rectangle(x, y, x + w, y + h))
+                            except:
+                                print("dlib did not work")
 
                             car_tracker[current_car] = tracker
                             # storing the position of the object for the starting frame(frame from which the object is detected)
