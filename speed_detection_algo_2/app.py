@@ -296,8 +296,8 @@ def gen():
                                 tracker = _dlib_pybind11.correlation_tracker()
                                 tracker.start_track(
                                     video, _dlib_pybind11.rectangle(x, y, x + w, y + h))
-                            except:
-                                print("dlib did not work")
+                            except Exception as excp:
+                                print(excp + "\n" + "Error in dlib function")
 
                             car_tracker[current_car] = tracker
                             # storing the position of the object for the starting frame(frame from which the object is detected)
@@ -343,9 +343,12 @@ def gen():
                     thickness=2,
                 )
 
-                frame = cv2.imencode('.jpg', video_final)[1].tobytes()
-                yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-                # time.sleep(0.1)     # video stream
+                try:
+                    frame = cv2.imencode('.jpg', video_final)[1].tobytes()
+                    yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                    # time.sleep(0.1)     # video stream
+                except Exception as excp:
+                    print(excp + "\n" + "Error in video stream")
 
             else:
                 print('Video Capture Failed')
