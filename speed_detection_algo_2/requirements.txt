@@ -16,3 +16,4 @@ pandas
 pytest
 dlib-bin==19.24.1
 gunicorn
+Flask-Cors
