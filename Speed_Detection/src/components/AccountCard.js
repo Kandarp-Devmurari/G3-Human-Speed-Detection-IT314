@@ -60,7 +60,7 @@ const AccountCard = () => {
   console.log(token);
   // setemail(token);
   // const email = localStorage.getItem("user-email");
-  const [totalSubmissions, setTotalSubmissions] = useState(0);
+  // const [totalSubmissions, setTotalSubmissions] = useState(0);
   // let email = "user-email",
   //   user_name = "username",
   //   totalSubmissions = 0;
@@ -107,25 +107,25 @@ const AccountCard = () => {
       </Card> */}
       {/*  */}
       <Card sx={{ maxWidth: 345 }}>
-        <CardMedia
+        {/* <CardMedia
           sx={{ height: 80 }}
           image="/static/images/cards/contemplative-reptile.jpg"
           title="green iguana"
-        />
+        /> */}
         <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          {/* <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            {email}
+          </Typography> */}
+          <Typography gutterBottom variant="h5" component="div">
             {email}
           </Typography>
-          <Typography gutterBottom variant="h5" component="div">
-            {user_name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
+          {/* <Typography variant="body2" color="text.secondary">
             {" "}
             Total Submissions: {totalSubmissions}{" "}
-          </Typography>
+          </Typography> */}
         </CardContent>
         <CardActions>
-          <Button size="small">Share</Button>
+          {/* <Button size="small">Share</Button> */}
           <Button size="small" onClick={handleLogOut}>
             Log Out
           </Button>
