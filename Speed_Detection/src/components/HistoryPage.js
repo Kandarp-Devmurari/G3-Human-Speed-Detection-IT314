@@ -147,7 +147,8 @@ import { Button, CardActionArea, CardActions } from "@mui/material";
 import { render } from "@testing-library/react";
 function HistoryPage() {
   const [history, setHistory] = useState([]);
-  const token = localStorage.getItem("user_email");
+  // const token = localStorage.getItem("user_email");
+  const [token , setToken] = useState(localStorage.getItem("user_email") || null);
   const navigate = useNavigate();
   if (!token) navigate("/sign-up");
   const [userEmail, setEmail] = useState("");
@@ -159,7 +160,7 @@ function HistoryPage() {
     console.log("email jo bhej raha hun", userEmail);
     fetchHistoryData();
     // window.location.reload();
-  }, []);
+  }, [token]);
 
   const fetchHistoryData = async () => {
     try {
@@ -179,7 +180,9 @@ function HistoryPage() {
         // window.location.reload();
         // console.log("set data ke upar");
         // setdata1([...data1, final]);
-        if(userEmail==final.user_email) data1.push(final);
+        console.log("final", final.user_email);
+        // console.log("userEmail", userEmail);
+        if(token==final.user_email) data1.push(final);
         // console.log(final.filename);
       }
       setdata2(data1);

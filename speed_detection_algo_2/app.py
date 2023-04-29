@@ -225,7 +225,7 @@ def gen():
                     cars = dataset_1.detectMultiScale(
                         gray_scale,
                         scaleFactor=1.3, # for accurate detection keep this value low, but for fast detection keep it high
-                        minNeighbors=4,
+                        minNeighbors=4, # higher value leads to less detections but with higher quality 
                         minSize=(30, 30),
                         flags=cv2.CASCADE_SCALE_IMAGE,
                     )

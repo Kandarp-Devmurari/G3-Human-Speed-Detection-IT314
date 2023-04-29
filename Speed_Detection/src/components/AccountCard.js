@@ -108,7 +108,7 @@ const AccountCard = () => {
           </Typography> */}
         </CardContent>
         <CardActions>
-          <Button size="small">Share</Button>
+          {/* <Button size="small">Share</Button> */}
           <Button size="small" onClick={handleLogOut}>
             Log Out
           </Button>
