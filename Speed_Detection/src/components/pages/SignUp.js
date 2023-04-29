@@ -23,7 +23,7 @@ function SignUp() {
   };
 
   const validateEmail = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/;
     if (!emailRegex.test(user.email)) {
       setErrorMsg("Please enter a valid email address.");
       return false;
