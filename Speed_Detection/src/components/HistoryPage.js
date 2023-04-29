@@ -179,7 +179,7 @@ function HistoryPage() {
         // window.location.reload();
         // console.log("set data ke upar");
         // setdata1([...data1, final]);
-        if(userEmail===final.user_email) data1.push(final);
+        if(userEmail==final.user_email) data1.push(final);
         // console.log(final.filename);
       }
       setdata2(data1);

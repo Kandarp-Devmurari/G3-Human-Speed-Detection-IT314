@@ -114,9 +114,8 @@ def vehicle_speed(side1, side2):
 
 # multiple car tracker fullfilling the Multi-detection Functional requirement
 # -------- MULTI DETECTION ----------- (FR)
-def gen():
-    # creating a dataset by using the haar cascade classifier
-    # the xml files can be created using the positive and negative images of the object to be detected.
+
+def if_xml_not_found():
     xml_exists = os.path.isfile(fr"xml-dataset\{xml_file}.xml")
     if xml_exists == False:
         # parallel processing to generate positive and negative images
@@ -127,8 +126,11 @@ def gen():
         p1.join()
         p2.join()
         generate_xml(xml_file)
-    
 
+
+def gen():
+    # creating a dataset by using the haar cascade classifier
+    # the xml files can be created using the positive and negative images of the object to be detected.
 
     dataset_1 = cv2.CascadeClassifier(fr"xml-dataset\{xml_file}.xml")
     dataset_2 = cv2.CascadeClassifier(fr"xml-dataset\{xml_file}.xml")
@@ -361,6 +363,7 @@ def gen():
 
 @app.route('/video_feed')
 def video_feed():
+    if_xml_not_found()
     print('Starting video stream')
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
