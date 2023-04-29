@@ -108,7 +108,7 @@ app.post("/login", async (req, res) => {
 // })
 app.post("/history", async (req, res) => { 
   const email = req.body.userEmail;
-  const data = await Output.find({});
+  const data = await Output.find({"user_email": email});
   var binData = new Array();
   // myObject = Object.assign(myObject, {"occupation": "engineer"});
   for (var i = 0; i < data.length; i++) { 
