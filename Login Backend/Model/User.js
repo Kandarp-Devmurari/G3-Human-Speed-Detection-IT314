@@ -11,6 +11,13 @@ const userschema = new mongoose.Schema({ // Create a schema for user
         type: String,
         required: true,
     },
+    tokens: [{ // Create a field for tokens
+        token: {
+            type: String,
+            required: true
+        }
+    }, // Create a field for history
+    ]
 }    
 
 );
