@@ -39,7 +39,7 @@ function App() {
           {/* <Route path="/products" element={<Products />} /> */}
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/AboutUs" element={<AboutUs />} />
-          <Route path="/Upload" element={<Upload />} />
+          {/* <Route path="/Upload" element={<Upload />} /> */}
           {/* <Route
             path="/Upload"
             render={isLogin ? <Upload /> : <Navigate to="/sign-up" />}

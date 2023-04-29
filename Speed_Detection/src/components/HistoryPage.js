@@ -247,7 +247,7 @@ function HistoryPage() {
           </Grow>
         ))
       ) : (
-        <div>Loading...</div>
+        <Card>No Submissions Yet</Card>
       )}
     </div>
   );

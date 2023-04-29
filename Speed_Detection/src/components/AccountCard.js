@@ -54,10 +54,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 const AccountCard = () => {
-  const [email, setemail] = useState("");
-  const [user_name, setName] = useState("username");
-  const token = localStorage.getItem("user_email");
-  console.log(token);
+  // const [email, setemail] = useState("");
+  // const [user_name, setName] = useState("username");
+  // const token = localStorage.getItem("user_email");
+  const [token, settoken] = useState("");
+  // console.log(token);
   // setemail(token);
   // const email = localStorage.getItem("user-email");
   const [totalSubmissions, setTotalSubmissions] = useState(0);
@@ -82,30 +83,12 @@ const AccountCard = () => {
     navigate("/");
     window.location.reload(false);
   };
+  useEffect(() => {
+    settoken(localStorage.getItem("user_email"));
+  }, []);
 
   return (
     <>
-      {/* <Card sx={{ maxWidth: 345 }}>
-        <CardMedia sx={{ height: 80 }} image="graph" title="graph Image" />
-        <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            user@email.com
-          </Typography>
-          <Typography gutterBottom variant="h5" component="div">
-            username
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Total Submissions: 25
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small">Share</Button>
-          <Button size="small" onClick={handleLogOut}>
-            Log Out
-          </Button>
-        </CardActions>
-      </Card> */}
-      {/*  */}
       <Card sx={{ maxWidth: 345 }}>
         <CardMedia
           sx={{ height: 80 }}
@@ -114,15 +97,15 @@ const AccountCard = () => {
         />
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            {email}
+            {token}
           </Typography>
-          <Typography gutterBottom variant="h5" component="div">
+          {/* <Typography gutterBottom variant="h5" component="div">
             {user_name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
+          </Typography> */}
+          {/* <Typography variant="body2" color="text.secondary">
             {" "}
             Total Submissions: {totalSubmissions}{" "}
-          </Typography>
+          </Typography> */}
         </CardContent>
         <CardActions>
           <Button size="small">Share</Button>

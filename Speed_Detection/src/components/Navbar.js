@@ -70,7 +70,7 @@ function Navbar() {
             {token && (
               <li className="nav-item">
                 <Link
-                  to="/Upload"
+                  to="http://127.0.0.1:3606/"
                   className="nav-links"
                   onClick={closeMobileMenu}
                 >
