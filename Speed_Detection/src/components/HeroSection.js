@@ -8,13 +8,13 @@ function HeroSection() {
     <div className="hero-container">
       <video src="/videos/video-1.mp4" autoPlay loop muted />
       <h1>Speed Detection</h1>
-      <p>
+      {/* <p>
         The optical flow method is a method that can be used to detect the
         motion of an object. It works by analyzing the movement of pixels
         between two consecutive frames of a video. The background subtraction
         method is a method that can be used to detect the motion of an object by
         subtracting the background from the current frame.
-      </p>
+      </p> */}
       {/* <div className="hero-btns">
         <Button
           className="btns"
