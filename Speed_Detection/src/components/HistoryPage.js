@@ -173,12 +173,13 @@ function HistoryPage() {
           filename: data[0][i].filename,
           uploadDate: data[0][i].uploadDate,
           data: data[1][i],
+          user_email: data[0][i].user_email,
           chunkSize: data[0][i].chunkSize,
         };
         // window.location.reload();
         // console.log("set data ke upar");
         // setdata1([...data1, final]);
-        data1.push(final);
+        if(userEmail===final.user_email) data1.push(final);
         // console.log(final.filename);
       }
       setdata2(data1);

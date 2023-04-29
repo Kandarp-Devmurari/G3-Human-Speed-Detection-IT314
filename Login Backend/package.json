@@ -1,7 +1,7 @@
 {
   "scripts": {
     "server": "nodemon index.js",
-    "test":"mocha tests/* --timeout 100000"
+    "test": "mocha tests/* --timeout 100000"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
@@ -10,6 +10,7 @@
     "email-validator": "^2.0.4",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.3",
     "nodemon": "^2.0.22"
   }

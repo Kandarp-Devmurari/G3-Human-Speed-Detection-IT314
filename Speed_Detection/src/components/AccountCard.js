@@ -96,7 +96,7 @@ const AccountCard = () => {
           title="green iguana"
         />
         <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          <Typography gutterBottom variant="h5" component="div">
             {token}
           </Typography>
           {/* <Typography gutterBottom variant="h5" component="div">

@@ -7,7 +7,6 @@ const dotenv = require("dotenv"); // Import dotenv
 const validator = require("email-validator"); // Import email-validator
 dotenv.config(); // Configure dotenv
 const session = require("express-session");
-const jwt = require('jsonwebtoken');    // Import jsonwebtoken
 
 app.use(bodyParser.json()); // Use body-parser
 app.use(cors());
@@ -89,17 +88,11 @@ app.post("/login", async (req, res) => {
     // Check if password is correct
     return res.send({ message: "Password is incorrect", user: "--" });
   }
-  const token = jwt.sign( // Create a token
-        {id: userexist._id}, // Payload
-        process.env.JWT_SECRET, // Secret key
-        {expiresIn: '1h'} // Expiration time
-        )
-  userexist.tokens = await userexist.tokens.concat({token: token}); // Add token to user
-    await userexist.save(); // Save user to database
-    res.send({ // Send response
-    "message":'Login successful',
-    "user":userexist,
-    token: token
+
+  res.send({
+    // Send response
+    message: "Login successful",
+    user: userexist,
   });
 });
 // app.get('/temp',async (req,res)=>{
