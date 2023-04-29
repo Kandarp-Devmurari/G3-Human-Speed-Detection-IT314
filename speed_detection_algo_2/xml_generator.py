@@ -12,12 +12,12 @@ def generate_xml(file_name):
 
     rm_dir = r'C:\Users\kanda\Desktop\SE_dataset\new-dataset'
 
-    time_to_wait = 10
+    # time_to_wait = 10
     time_counter = 0
     while not os.path.exists(src_path):
         time.sleep(1)
-        time_counter += 1
-        if time_counter > time_to_wait:break
+        # time_counter += 1
+        # if time_counter > time_to_wait:break
     
     if os.path.isfile(src_path):
         os.rename(src_path, dst_path)

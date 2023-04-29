@@ -356,7 +356,7 @@ def gen():
     print('\nClosing video')
     video_c.release()
     cv2.destroyAllWindows()
-    plot_graph()
+    plot_graph(xml_file)
 
 
 @app.route('/video_feed')

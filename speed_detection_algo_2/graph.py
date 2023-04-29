@@ -6,7 +6,7 @@ import os
 import gridfs
 
 
-def plot_graph():
+def plot_graph(imagename):
     plt.style.use('bmh')
     df = pd.read_csv(r"csv-dataset\output.csv")
 
@@ -36,12 +36,13 @@ def plot_graph():
         plt.close(fig)
 
         file_name = "{}.png".format(i)
+        print(file_name)
         file_location = "graphs/" + file_name
-        
         file_data = open(file_location, "rb")
         data = file_data.read()
         fs = gridfs.GridFS(db)
-        fs.put(data, filename = file_name, user_email = os.getenv('USER_EMAIL'))
+        image_name = imagename + "_" + file_name
+        fs.put(data, filename = image_name, user_email = os.getenv('USER_EMAIL'))
         print("upload complete")
 
     files = glob.glob('graphs/*')
