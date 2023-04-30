@@ -2,7 +2,7 @@
   "name": "speed_detection",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://swiftsense-api.onrender.com",
+  "proxy": "https://swiftsense-api1.onrender.com",
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
