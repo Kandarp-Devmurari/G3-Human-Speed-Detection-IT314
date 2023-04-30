@@ -8,6 +8,7 @@ const dotenv = require("dotenv"); // Import dotenv
 const validator= require("express-validator");
 dotenv.config(); // Configure dotenv
 const session = require("express-session");
+const axios = require('axios'); // Import axios
 
 app.use(bodyParser.json()); // Use body-parser
 app.use(cors());
@@ -38,10 +39,12 @@ app.post("/register", async (req, res) => {
     return res.send({message:"Please enter email and password"});
   }
 
-  if (!validator.validate(email)) {
-    // Check if email is valid
-    return res.send({message:"Please enter a valid email"});
-  }
+  const response = await axios.get(`https://api.zerobounce.net/v2/validate?api_key=${process.env.REACT_APP_API}&email=${email}`)
+
+        if (response.data.status !== "valid"){
+            return res.send('Email Does Not Exist !');
+        }
+    
 
   const isexistUser = await User.findOne({ email: email }); // Check if user already exist
   if (isexistUser) {
