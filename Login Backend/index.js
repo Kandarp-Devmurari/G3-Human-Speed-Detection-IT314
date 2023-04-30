@@ -6,7 +6,7 @@ const cors = require('cors'); // Import cors
 const dotenv = require('dotenv'); // Import dotenv
 dotenv.config(); // Configure dotenv
 const jwt = require('jsonwebtoken');    // Import jsonwebtoken
-const {getuserDetails} = require('./Profile/GetDetails.js'); // Import getuserDetails function from Profile/GetDetails.js
+// const {getuserDetails} = require('./Profile/GetDetails.js'); // Import getuserDetails function from Profile/GetDetails.js
 app.use(bodyParser.json()); // Use body-parser
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true })); 
@@ -44,7 +44,7 @@ app.post("/register", async (req, res) => {
   const response = await axios.get(`https://api.zerobounce.net/v2/validate?api_key=${process.env.REACT_APP_API}&email=${email}`)
 
         if (response.data.status !== "valid"){
-            return res.send('Please Enter a valid email!');
+            return res.send({message:"Please Enter a valid email!"});
         }
     
 
@@ -83,7 +83,7 @@ app.post("/login", async (req, res) => {
   const response = await axios.get(`https://api.zerobounce.net/v2/validate?api_key=${process.env.REACT_APP_API}&email=${email}`)
 
         if (response.data.status !== "valid"){
-            return res.send('Please Enter a valid email!');
+            return res.send({message:"Please Enter a valid email!"});
         }
 
   const userexist = await User.findOne({ email: email }); // Check if user already exist
