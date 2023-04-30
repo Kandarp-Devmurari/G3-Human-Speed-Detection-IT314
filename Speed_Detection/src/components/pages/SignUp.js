@@ -27,7 +27,7 @@ function SignUp() {
     if (!emailRegex.test(user.email)) {
       setErrorMsg("Please enter a valid email address.");
       return false;
-    } else if (user.email.length < 7 || user.email.length > 25) {
+    } else if (user.email.length < 7) {
       setErrorMsg("Email address should be between 7 to 25 characters.");
       return false;
     }
@@ -116,9 +116,11 @@ function SignUp() {
         window.alert("Invalid Register");
         console.log("invalid register", data);
       } else {
-        window.alert("Success");
-        console.log("Success", data.message, data.user);
-        setActiveForm("login");
+        window.alert(data.message);
+        if ((data.message = "User created successfully")) {
+          console.log("Success", data.message, data.user);
+          setActiveForm("login");
+        }
       }
     }
   };
