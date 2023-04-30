@@ -4,7 +4,8 @@ const connectDB = require("./MongoConnect.js"); // Import connectDB function fro
 const bodyParser = require("body-parser"); // Import body-parser
 const cors = require("cors"); // Import cors
 const dotenv = require("dotenv"); // Import dotenv
-const validator = require("email-validator"); // Import email-validator
+// const validator = require("email-validator"); // Import email-validator
+const validator= require("express-validator");
 dotenv.config(); // Configure dotenv
 const session = require("express-session");
 
@@ -34,17 +35,17 @@ app.post("/register", async (req, res) => {
 
   if (!email || !password) {
     // Check if email or password is empty
-    return res.send("Please enter email and password");
+    return res.send({message:"Please enter email and password"});
   }
 
   if (!validator.validate(email)) {
     // Check if email is valid
-    return res.send("Please enter a valid email");
+    return res.send({message:"Please enter a valid email"});
   }
 
   const isexistUser = await User.findOne({ email: email }); // Check if user already exist
   if (isexistUser) {
-    return res.send("User already exist");
+    return res.send({message:"User already exist"});
   }
 
   const user = new User({
@@ -108,7 +109,7 @@ app.post("/login", async (req, res) => {
 // })
 app.post("/history", async (req, res) => { 
   const email = req.body.userEmail;
-  const data = await Output.find({});
+  const data = await Output.find({"user_email":email});
   var binData = new Array();
   // myObject = Object.assign(myObject, {"occupation": "engineer"});
   for (var i = 0; i < data.length; i++) { 

@@ -182,7 +182,8 @@ function HistoryPage() {
         // setdata1([...data1, final]);
         console.log("final", final.user_email);
         // console.log("userEmail", userEmail);
-        if(token==final.user_email) data1.push(final);
+        // if(token==final.user_email) data1.push(final);
+        data1.push(final);
         // console.log(final.filename);
       }
       setdata2(data1);
