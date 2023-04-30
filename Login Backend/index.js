@@ -1,14 +1,17 @@
-const express = require("express"); // Import express
-const app = express(); // Make express app
-const connectDB = require("./MongoConnect.js"); // Import connectDB function from MongoConnect.js
-const bodyParser = require("body-parser"); // Import body-parser
-const cors = require("cors"); // Import cors
-const dotenv = require("dotenv"); // Import dotenv
-// const validator = require("email-validator"); // Import email-validator
-const validator= require("express-validator");
+const express = require('express') // Import express
+const app = express() // Make express app
+const connectDB = require('./MongoConnect.js'); // Import connectDB function from MongoConnect.js
+const bodyParser = require('body-parser'); // Import body-parser
+const cors = require('cors'); // Import cors
+const dotenv = require('dotenv'); // Import dotenv
 dotenv.config(); // Configure dotenv
-const session = require("express-session");
+const jwt = require('jsonwebtoken');    // Import jsonwebtoken
+const {getuserDetails} = require('./Profile/GetDetails.js'); // Import getuserDetails function from Profile/GetDetails.js
+app.use(bodyParser.json()); // Use body-parser
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true })); 
 const axios = require('axios'); // Import axios
+const User = require('./Model/User.js'); // Import User model from Model/User.js
 
 app.use(bodyParser.json()); // Use body-parser
 app.use(cors());
@@ -19,7 +22,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const Output = require("./Model/Outputgraph.js"); // Import User model from Model/User.js
 const Chunk = require("./Model/chunks.js"); // Import User model from Model/chunks.js
-const User = require("./Model/User.js"); // Import User model from Model/User.js
 const { default: mongoose } = require("mongoose");
 
 app.get("/", (req, res) => {
@@ -42,7 +44,7 @@ app.post("/register", async (req, res) => {
   const response = await axios.get(`https://api.zerobounce.net/v2/validate?api_key=${process.env.REACT_APP_API}&email=${email}`)
 
         if (response.data.status !== "valid"){
-            return res.send('Email Does Not Exist !');
+            return res.send('Please Enter a valid email!');
         }
     
 
@@ -78,10 +80,11 @@ app.post("/login", async (req, res) => {
     });
   }
 
-  if (!validator.validate(email)) {
-    // Check if email is valid
-    return res.send({ message: "Please enter a valid email", user: "--" });
-  }
+  const response = await axios.get(`https://api.zerobounce.net/v2/validate?api_key=${process.env.REACT_APP_API}&email=${email}`)
+
+        if (response.data.status !== "valid"){
+            return res.send('Please Enter a valid email!');
+        }
 
   const userexist = await User.findOne({ email: email }); // Check if user already exist
   if (!userexist) {
